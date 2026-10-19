@@ -1,0 +1,227 @@
+<!doctype html>
+<html lang="bn">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#102b24">
+<title>Life Clock Tracker — যা শিখলাম</title>
+<style>
+:root{--bg:#f4f7f5;--ink:#172923;--muted:#60736a;--green:#176b4d;--lime:#d8f06a;--card:#fff;--line:#dce6df}
+*{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--ink);font:16px/1.5 system-ui,-apple-system,"Noto Sans Bengali",sans-serif}
+header{background:linear-gradient(135deg,#102b24,#176b4d);color:#fff;padding:24px 17px 26px;border-radius:0 0 24px 24px}
+.wrap{max-width:760px;margin:auto;padding:0 14px 30px}.brand{font-size:13px;letter-spacing:.08em;color:var(--lime);font-weight:800}
+h1{font-size:clamp(27px,7vw,38px);line-height:1.2;margin:9px 0}.sub{color:#e0eee7;margin:0}
+.pill{display:inline-block;background:#ffffff1c;border:1px solid #ffffff35;border-radius:99px;padding:5px 10px;font-size:12px;margin-top:13px}
+.stats{display:grid;grid-template-columns:repeat(3,1fr);gap:9px;margin-top:-15px;position:relative}
+.stat,.card{background:var(--card);border:1px solid var(--line);border-radius:16px;padding:14px;box-shadow:0 4px 15px #153a2610}
+.stat strong{display:block;font-size:22px;color:var(--green)}.stat span{font-size:12px;color:var(--muted)}
+.card{margin-top:14px}.sectionhead{display:flex;justify-content:space-between;gap:8px;align-items:center}h2{font-size:19px;margin:0 0 8px}h3{font-size:16px;margin:0 0 6px}
+small,.muted{color:var(--muted)}.progress{height:9px;background:#e7eee9;border-radius:20px;overflow:hidden;margin:9px 0}.progress div{height:100%;width:0;background:var(--green);transition:width .2s}
+button,select,input,textarea{font:inherit}button{border:0;border-radius:11px;padding:11px 14px;background:var(--green);color:#fff;font-weight:700;cursor:pointer;min-height:44px}
+button.secondary{background:#edf4ef;color:var(--green);border:1px solid var(--line)}button.danger{background:#fff0ee;color:#a53326}
+.controls{display:flex;gap:8px;flex-wrap:wrap;margin:10px 0}.controls>*{flex:1}
+.profile{display:grid;grid-template-columns:92px 1fr;gap:14px;align-items:start}.avatar{width:92px;height:92px;border-radius:50%;object-fit:cover;background:#edf4ef;border:2px solid var(--line)}.profilefields{display:grid;gap:8px}.profilefields label{font-size:13px;font-weight:700}.profilefields input{margin-top:4px}.report-note{background:#f0f6f1;border-radius:10px;padding:12px;font-size:13px;color:var(--muted)}
+@media print{body{background:#fff;font-size:11pt;color:#111}header{background:#fff!important;color:#111;border:0;padding:10px 0}.sub,.pill,.brand{color:#333!important}.wrap{max-width:none;padding:0}.card,.stat{box-shadow:none;break-inside:avoid;border:1px solid #bbb}.stats{margin-top:0}.no-print,button,input[type=file]{display:none!important}#printReport{display:block!important}.chart{height:70px}.avatar{print-color-adjust:exact}footer{display:none}}
+#printReport{display:none}@media print{#printReport{display:block!important}.card.no-print{display:none!important}}
+select,input[type=date],textarea{width:100%;padding:11px;border:1px solid var(--line);border-radius:10px;background:#fff;color:var(--ink)}
+.daynav{display:grid;grid-template-columns:48px 1fr 48px;gap:8px;align-items:center}.daynav button{padding:8px}.daytitle{text-align:center;font-weight:800}
+.domain{border:1px solid var(--line);border-radius:13px;padding:12px;margin-top:10px}.domain label{display:flex;gap:10px;align-items:flex-start;cursor:pointer}.domain input{width:21px;height:21px;accent-color:var(--green);flex-shrink:0;margin-top:2px}.domain p{margin:3px 0 0;font-size:13px;color:var(--muted)}
+textarea{min-height:90px;resize:vertical}.journalrow{margin-top:10px}.journalrow label{display:block;font-weight:700;margin-bottom:5px}
+.chart{display:flex;align-items:end;gap:4px;height:100px;padding-top:8px}.barwrap{flex:1;min-width:0;text-align:center;font-size:10px;color:var(--muted)}.bar{background:#5ca884;border-radius:5px 5px 0 0;min-height:2px;width:100%}
+footer{text-align:center;color:var(--muted);font-size:12px;padding:20px 8px}
+@media(min-width:560px){.wrap{padding-left:20px;padding-right:20px}.card{padding:18px}.domain{padding:14px}}
+</style>
+</head>
+<body>
+<header><div class="wrap">
+<div class="brand">🌱 SPONSORED BY যা শিখলাম</div>
+<h1>Life Clock Tracker</h1>
+<p class="sub">প্রতিদিনের ছোট কাজকে জীবনের বড় পরিবর্তনে রূপ দাও।</p>
+<span class="pill">30-Day Personal Growth Demo</span>
+</div></header>
+<main class="wrap">
+<section class="card no-print">
+<h2>তোমার প্রোফাইল</h2>
+<div class="profile">
+<div><img id="profilePreview" class="avatar" alt="প্রোফাইল ছবি" src="" /><label for="profilePhoto" style="display:block;font-size:12px;margin-top:6px">ছবি নির্বাচন</label><input id="profilePhoto" type="file" accept="image/*" style="width:100%;font-size:11px"></div>
+<div class="profilefields">
+<label>তোমার নাম<input id="profileName" type="text" placeholder="নিজের নাম লিখো"></label>
+<label>৩০ দিনের চ্যালেঞ্জ শুরুর তারিখ<input id="startDate" type="date"></label>
+<button id="saveProfile">প্রোফাইল সেভ করো</button>
+</div>
+</div>
+<p class="muted">প্রোফাইল ও অগ্রগতি এই ব্রাউজারেই থাকে। ছবি দিলে ছোট করে সংরক্ষণ করা হবে।</p>
+</section>
+<div class="stats">
+<div class="stat"><strong id="todayScore">0%</strong><span>আজকের অগ্রগতি</span></div>
+<div class="stat"><strong id="streak">0/30</strong><span>সম্পন্ন দিন</span></div>
+<div class="stat"><strong id="avgScore">0%</strong><span>সামগ্রিক গড়</span></div>
+</div>
+<section class="card">
+<div class="sectionhead"><h2>আজকের ট্র্যাকার</h2><small id="phase">Phase 1: Focus</small></div>
+<div class="daynav">
+<button class="secondary" id="prevBtn" aria-label="আগের দিন">‹</button>
+<div class="daytitle" id="dayTitle">Day 1 of 30</div>
+<button class="secondary" id="nextBtn" aria-label="পরের দিন">›</button>
+</div>
+<div class="progress"><div id="dayProgress"></div></div>
+<p class="muted" id="dayMessage">আজকের ছোট পদক্ষেপটি সম্পন্ন করো।</p>
+<div id="taskList"></div>
+<div class="controls"><button id="saveBtn">আজকের অগ্রগতি সেভ করো</button><button class="secondary" id="todayBtn">আজকের দিন</button></div>
+</section>
+<section class="card">
+<h2>Energy Check</h2>
+<label for="energy">আজকের এনার্জি কেমন ছিল?</label>
+<select id="energy"><option value="">নির্বাচন করো</option><option>খুব ভালো</option><option>ভালো</option><option>মাঝারি</option><option>কম</option></select>
+<div class="journalrow"><label for="learned">আজ কী শিখলাম?</label><textarea id="learned" placeholder="একটি নতুন ধারণা, দক্ষতা বা উপলব্ধি লিখো..."></textarea></div>
+<div class="journalrow"><label for="applied">আজ কী প্রয়োগ করলাম?</label><textarea id="applied" placeholder="বাস্তবে কী করেছ?"></textarea></div>
+<div class="journalrow"><label for="tomorrow">আগামীকালের একটি গুরুত্বপূর্ণ কাজ</label><textarea id="tomorrow" placeholder="আগামীকাল কোন কাজটি অবশ্যই করবে?"></textarea></div>
+<button id="saveJournal" style="margin-top:12px;width:100%">জার্নাল সেভ করো</button>
+</section>
+<section class="card">
+<h2>৩০ দিনের অগ্রগতি</h2><p class="muted">প্রতিটি বার একটি দিনের সম্পন্ন কাজের শতাংশ দেখায়।</p>
+<div class="chart" id="chart"></div>
+<div class="progress"><div id="overallProgress"></div></div>
+<p id="overallText" class="muted">0 / 300 কাজ সম্পন্ন</p>
+</section>
+<section class="card no-print">
+<h2>৩০ দিনের রিপোর্ট</h2>
+<p class="muted">৩০ দিনের শেষে শেখা, প্রয়োগ, ধারাবাহিকতা এবং বেশি ফোকাস দরকার এমন ক্ষেত্রগুলোর রিপোর্ট তৈরি করে প্রিন্ট বা PDF হিসেবে সেভ করতে পারবে।</p>
+<div class="controls"><button id="reportBtn">রিপোর্ট তৈরি ও প্রিন্ট</button><button class="secondary" id="previewReportBtn">রিপোর্ট প্রিভিউ</button></div>
+<div class="report-note">PDF বানাতে প্রিন্ট উইন্ডোতে <b>Save as PDF</b> নির্বাচন করো। রিপোর্টে শুধু তোমার সেভ করা তথ্য ও ট্র্যাকার চেকলিস্টের ভিত্তিতে বিশ্লেষণ থাকবে।</div>
+</section>
+<section id="printReport"></section>
+<section class="card no-print">
+<h2>ডেটা ব্যাকআপ</h2>
+<p class="muted">তোমার তথ্য এই ব্রাউজারের লোকাল স্টোরেজে থাকে। অন্য ফোনে নিজে থেকে সিঙ্ক হবে না। প্রয়োজনে JSON ব্যাকআপ ডাউনলোড করো।</p>
+<div class="controls"><button id="exportBtn">ব্যাকআপ ডাউনলোড</button><button class="secondary" id="importBtn">ব্যাকআপ ইমপোর্ট</button><input id="importFile" type="file" accept=".json,application/json" hidden></div>
+<button class="danger" id="resetBtn" style="width:100%">সব ডেটা রিসেট</button>
+</section>
+<footer>যা শিখলাম · শিখছি, প্রয়োগ করছি, শেয়ার করছি<br>Demo version · তথ্য এই ডিভাইসের ব্রাউজারেই সংরক্ষিত হয়।</footer>
+</main>
+<script>
+(function(){
+'use strict';
+const domains=[
+['Success Identity','নিজের লক্ষ্য ও পরিচয়ের সঙ্গে মিল রেখে একটি কাজ করো।'],
+['Emotional Wellbeing','নিজের অনুভূতি চিনে নাও এবং শান্তভাবে সামলাও।'],
+['Mental Wellness','১০ মিনিট মনোযোগ দিয়ে পড়ো বা চিন্তা গুছিয়ে লেখো।'],
+['Physical Energy','হাঁটা, ব্যায়াম বা শরীরচর্চার একটি কাজ করো।'],
+['Occupational Wellness','পড়াশোনা, কাজ বা দক্ষতা উন্নয়নে একটি পদক্ষেপ নাও।'],
+['Purpose & Values','নিজের মূল্যবোধের সঙ্গে মেলে এমন একটি কাজ করো।'],
+['Relationships','পরিবার বা প্রিয় কারও সঙ্গে অর্থপূর্ণভাবে যোগাযোগ করো।'],
+['Environment','নিজের কাজের জায়গা বা আশপাশ গুছিয়ে নাও।'],
+['Divine / Spiritual','ইবাদত, কৃতজ্ঞতা বা আত্মসমালোচনার জন্য সময় দাও।'],
+['Momentum Meter','আজকের সবচেয়ে গুরুত্বপূর্ণ কাজটি শেষ করার চেষ্টা করো।']
+];
+const KEY='jaShiklamLifeClockV1';
+let data={days:{},journals:{},profile:{name:'',photo:'',startDate:''}},current=1;
+const $=id=>document.getElementById(id);
+function load(){try{const x=localStorage.getItem(KEY);if(x){const parsed=JSON.parse(x);if(parsed&&parsed.days)data={days:parsed.days||{},journals:parsed.journals||{},profile:parsed.profile||{name:'',photo:'',startDate:''}};}}catch(e){}}
+function persist(){try{localStorage.setItem(KEY,JSON.stringify(data));return true;}catch(e){alert('এই ব্রাউজারে স্টোরেজ পাওয়া যাচ্ছে না। ব্যাকআপ ডাউনলোড করে রাখো।');return false;}}
+function dayData(n){if(!data.days[n])data.days[n]={checks:[],energy:''};return data.days[n];}
+function percent(n){const d=data.days[n];return d?Math.round((new Set(d.checks||[]).size/domains.length)*100):0;}
+function renderProfile(){
+ const p=data.profile||{};
+ $('profileName').value=p.name||'';
+ $('startDate').value=p.startDate||'';
+ $('profilePreview').src=p.photo||'';
+}
+function render(){
+$('dayTitle').textContent='Day '+current+' of 30';
+$('phase').textContent=current<=10?'Phase 1: Focus':current<=20?'Phase 2: Force':'Phase 3: Empower';
+$('dayMessage').textContent=current<=10?'ভিত্তি তৈরি করো: ছোট কিন্তু নিয়মিত পদক্ষেপ।':current<=20?'গতি ধরে রাখো: অজুহাত নয়, ধারাবাহিকতা।':'নিজের পরিবর্তন পর্যালোচনা করো এবং এগিয়ে যাও।';
+const d=dayData(current);const list=$('taskList');list.innerHTML='';
+domains.forEach((item,i)=>{const row=document.createElement('div');row.className='domain';
+const label=document.createElement('label');const cb=document.createElement('input');cb.type='checkbox';cb.checked=(d.checks||[]).includes(i);cb.setAttribute('aria-label',item[0]);
+cb.addEventListener('change',()=>{const set=new Set(dayData(current).checks||[]);cb.checked?set.add(i):set.delete(i);dayData(current).checks=[...set];persist();render();});
+const txt=document.createElement('div');const title=document.createElement('strong');title.textContent=item[0];const desc=document.createElement('p');desc.textContent=item[1];txt.append(title,desc);label.append(cb,txt);row.append(label);list.append(row);});
+$('dayProgress').style.width=percent(current)+'%';$('todayScore').textContent=percent(current)+'%';
+$('energy').value=d.energy||'';
+const j=data.journals[current]||{};$('learned').value=j.learned||'';$('applied').value=j.applied||'';$('tomorrow').value=j.tomorrow||'';
+let completed=0;for(let i=1;i<=30;i++)completed+=new Set((data.days[i]||{}).checks||[]).size;
+$('streak').textContent=Object.keys(data.days).filter(n=>percent(Number(n))===100).length+'/30';
+$('avgScore').textContent=Math.round(completed/300*100)+'%';$('overallProgress').style.width=(completed/300*100)+'%';$('overallText').textContent=completed+' / 300 কাজ সম্পন্ন';
+const chart=$('chart');chart.innerHTML='';for(let i=1;i<=30;i++){const w=document.createElement('div');w.className='barwrap';const b=document.createElement('div');b.className='bar';b.style.height=Math.max(2,percent(i)*.72)+'px';if(i===current)b.style.background='#176b4d';const l=document.createElement('div');l.textContent=i;w.append(b,l);chart.append(w);}
+}
+$('prevBtn').addEventListener('click',()=>{current=Math.max(1,current-1);render();});
+$('nextBtn').addEventListener('click',()=>{current=Math.min(30,current+1);render();});
+$('todayBtn').addEventListener('click',()=>{current=Math.max(1,Math.min(30,Math.ceil((Date.now()-new Date(new Date().getFullYear(),new Date().getMonth(),new Date().getDate()).getTime())/86400000)||1));render();});
+$('saveBtn').addEventListener('click',()=>{dayData(current).energy=$('energy').value;persist();render();alert('আজকের অগ্রগতি সেভ হয়েছে!');});
+$('saveJournal').addEventListener('click',()=>{dayData(current).energy=$('energy').value;data.journals[current]={learned:$('learned').value,applied:$('applied').value,tomorrow:$('tomorrow').value};persist();alert('জার্নাল সেভ হয়েছে!');});
+$('energy').addEventListener('change',()=>{dayData(current).energy=$('energy').value;persist();});
+$('exportBtn').addEventListener('click',()=>{const blob=new Blob([JSON.stringify(data,null,2)],{type:'application/json'});const url=URL.createObjectURL(blob);const a=document.createElement('a');a.href=url;a.download='ja-shiklam-life-clock-backup.json';document.body.appendChild(a);a.click();a.remove();setTimeout(()=>URL.revokeObjectURL(url),1000);});
+$('importBtn').addEventListener('click',()=>$('importFile').click());
+$('importFile').addEventListener('change',async e=>{const f=e.target.files&&e.target.files[0];if(!f)return;try{const v=JSON.parse(await f.text());if(!v||typeof v.days!=='object')throw new Error();data={days:v.days||{},journals:v.journals||{}};persist();render();alert('ব্যাকআপ ইমপোর্ট হয়েছে!');}catch(err){alert('ফাইলটি সঠিক ব্যাকআপ JSON নয়।');}e.target.value='';});
+$('resetBtn').addEventListener('click',()=>{if(confirm('সব অগ্রগতি ও জার্নাল মুছে ফেলবে? এই কাজ ফিরিয়ে আনা যাবে না।')){data={days:{},journals:{}};persist();current=1;render();}});
+
+function makeReport(){
+ const profile=data.profile||{};
+ const totalTasks=domains.length*30;
+ let completed=0, completedDays=0, activeDays=0, energyCount=0;
+ const domainTotals=domains.map((d,i)=>({name:d[0],description:d[1],done:0}));
+ const lessons=[], applications=[], plans=[], energies={};
+ for(let n=1;n<=30;n++){
+  const d=data.days[n]||{};
+  const checks=[...new Set(d.checks||[])];
+  completed+=checks.length;
+  if(checks.length)activeDays++;
+  if(checks.length===domains.length)completedDays++;
+  checks.forEach(i=>{if(domainTotals[i])domainTotals[i].done++;});
+  if(d.energy){energies[d.energy]=(energies[d.energy]||0)+1;energyCount++;}
+  const j=data.journals[n]||{};
+  if((j.learned||'').trim())lessons.push({day:n,text:j.learned.trim()});
+  if((j.applied||'').trim())applications.push({day:n,text:j.applied.trim()});
+  if((j.tomorrow||'').trim())plans.push({day:n,text:j.tomorrow.trim()});
+ }
+ const avg=Math.round(completed/totalTasks*100);
+ const ranked=[...domainTotals].sort((a,b)=>a.done-b.done);
+ const focus=ranked.slice(0,3);
+ const strengths=[...domainTotals].sort((a,b)=>b.done-a.done).slice(0,3);
+ const title=profile.name?profile.name+'-এর ৩০ দিনের শেখার রিপোর্ট':'৩০ দিনের শেখার রিপোর্ট';
+ const escapeHtml=v=>String(v||'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+ const list=(items,empty)=>items.length?'<ul>'+items.map(x=>'<li><b>দিন '+x.day+':</b> '+escapeHtml(x.text)+'</li>').join('')+'</ul>':'<p>'+empty+'</p>';
+ const photo=profile.photo?'<img class="avatar" style="float:right" src="'+profile.photo+'" alt="Profile photo">':'';
+ const start=profile.startDate?new Date(profile.startDate+'T12:00:00').toLocaleDateString('bn-BD'):'উল্লেখ করা হয়নি';
+ $('printReport').innerHTML='<div class="card">'+photo+'<h1>'+escapeHtml(title)+'</h1><p>প্রস্তুতকারক: '+escapeHtml(profile.name||'নাম দেওয়া হয়নি')+' · শুরুর তারিখ: '+escapeHtml(start)+'</p><hr><h2>১. ৩০ দিনের সারসংক্ষেপ</h2><p><b>মোট কাজ:</b> '+completed+' / '+totalTasks+' ('+avg+'%) · <b>কোনো কাজ করা হয়েছে এমন দিন:</b> '+activeDays+'/30 · <b>সব ১০টি কাজ সম্পন্ন দিন:</b> '+completedDays+'/30</p><h2>২. কোন ক্ষেত্রগুলোতে নিয়মিত কাজ হয়েছে</h2><ul>'+strengths.map(x=>'<li>'+escapeHtml(x.name)+': '+x.done+'/30 দিন</li>').join('')+'</ul><h2>৩. বেশি ফোকাস দরকার</h2><p>নিচের ক্ষেত্রগুলোতে ট্র্যাকার অনুযায়ী সবচেয়ে কম কাজ চেক করা হয়েছে। এটি অগ্রগতির একটি ইঙ্গিত, ব্যক্তিত্ব বা সক্ষমতার চূড়ান্ত মূল্যায়ন নয়।</p><ul>'+focus.map(x=>'<li><b>'+escapeHtml(x.name)+'</b> — '+x.done+'/30 দিন। পরের মাসে সপ্তাহে অন্তত ৩ দিন এই ক্ষেত্রের জন্য নির্দিষ্ট ছোট কাজ রাখো।</li>').join('')+'</ul><h2>৪. আমি কী শিখেছি</h2>'+list(lessons,'কোনো শেখার নোট সেভ করা হয়নি।')+'<h2>৫. কী প্রয়োগ করেছি</h2>'+list(applications,'কোনো প্রয়োগের নোট সেভ করা হয়নি।')+'<h2>৬. আগামী দিনের পরিকল্পনা</h2>'+list(plans,'আগামী দিনের কোনো পরিকল্পনা সেভ করা হয়নি।')+'<h2>৭. এনার্জি চেক</h2><p>'+ (energyCount?Object.entries(energies).map(([k,v])=>escapeHtml(k)+': '+v+' দিন').join(' · '):'এনার্জির তথ্য পাওয়া যায়নি।')+'</p><h2>৮. পরবর্তী ৩০ দিনের পরামর্শ</h2><ol><li>সবচেয়ে কম স্কোর করা ৩টি ক্ষেত্রের মধ্যে একটি বেছে নিয়ে ছোট ও নির্দিষ্ট কাজ ঠিক করো।</li><li>প্রতিদিন “আজ কী শিখলাম” এবং “আজ কী প্রয়োগ করলাম” লিখতে ৩ মিনিট রাখো।</li><li>সপ্তাহে একবার অগ্রগতি দেখো; বাদ পড়া দিনগুলোকে ব্যর্থতা না ধরে পরের কাজের পরিকল্পনা করো।</li><li>স্কোর কম হওয়ার কারণ নিজে নোট করো—সময়, শক্তি, অস্পষ্ট লক্ষ্য, নাকি পরিবেশের বাধা।</li></ol><p><small>এই রিপোর্টটি তোমার ট্র্যাকার ও জার্নালে সেভ করা তথ্য থেকে তৈরি। ফাঁকা নোটকে শেখা হয়েছে বলে ধরে নেওয়া হয়নি।</small></p></div>';
+ return {completed,avg};
+}
+$('saveProfile').addEventListener('click',()=>{
+ data.profile=data.profile||{};
+ data.profile.name=$('profileName').value.trim();
+ data.profile.startDate=$('startDate').value;
+ persist();alert('প্রোফাইল সেভ হয়েছে।');
+});
+$('profilePhoto').addEventListener('change',e=>{
+ const file=e.target.files&&e.target.files[0];if(!file)return;
+ if(!file.type.startsWith('image/')){alert('একটি ছবি নির্বাচন করো।');return;}
+ const reader=new FileReader();
+ reader.onload=()=>{
+  const img=new Image();
+  img.onload=()=>{
+   const canvas=document.createElement('canvas');const max=360;
+   const scale=Math.min(1,max/Math.max(img.width,img.height));
+   canvas.width=Math.round(img.width*scale);canvas.height=Math.round(img.height*scale);
+   canvas.getContext('2d').drawImage(img,0,0,canvas.width,canvas.height);
+   data.profile=data.profile||{};data.profile.photo=canvas.toDataURL('image/jpeg',0.78);
+   $('profilePreview').src=data.profile.photo;persist();
+  };
+  img.src=reader.result;
+ };
+ reader.readAsDataURL(file);
+});
+$('previewReportBtn').addEventListener('click',()=>{makeReport();$('printReport').style.display='block';$('printReport').scrollIntoView({behavior:'smooth'});});
+$('reportBtn').addEventListener('click',()=>{
+ const result=makeReport();
+ const start=data.profile&&data.profile.startDate?new Date(data.profile.startDate+'T12:00:00'):null;
+ const elapsed=start?Math.floor((new Date()-start)/86400000)+1:0;
+ if(elapsed<30 && !confirm('শুরুর তারিখ অনুযায়ী ৩০ দিন এখনো শেষ হয়নি। এখনকার তথ্য দিয়ে রিপোর্ট প্রিন্ট করবে?'))return;
+ $('printReport').style.display='block';
+ window.print();
+});
+
+load();renderProfile();render();
+})();
+</script>
+</body>
+</html>
